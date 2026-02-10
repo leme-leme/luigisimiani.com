@@ -117,15 +117,14 @@ export default function FeaturedWork({ galleries, quotes = [] }) {
                   transition={{ duration: 0.8 }}
                 >
                   <Link href={`/gallery/${gallery.id}`} className="block group">
-                    {/* Image with natural aspect ratio */}
-                    <div className="relative overflow-hidden">
+                    {/* Image with vertical aspect ratio for landing page */}
+                    <div className="relative overflow-hidden aspect-[3/4] md:aspect-[2/3]">
                       <Image
-                        src={gallery.coverPhoto || gallery.imageUrls[0]}
+                        src={gallery.coverPhotoVertical || gallery.coverPhoto || gallery.imageUrls[0]}
                         alt={gallery.title}
-                        width={0}
-                        height={0}
+                        fill
                         sizes={isHero ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
-                        className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                       />
 
                       {/* Gradient overlay for text */}

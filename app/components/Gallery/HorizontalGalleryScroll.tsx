@@ -35,9 +35,9 @@ export default function HorizontalGalleryScroll({ galleries }: HorizontalGallery
             className="flex-shrink-0"
           >
             <Link href={`/gallery/${gallery.id}`} className="block group">
-              <div className="relative w-72 md:w-80 lg:w-96 aspect-[4/3] overflow-hidden">
+              <div className="relative w-72 md:w-80 lg:w-96 aspect-[4/3] overflow-hidden bg-[#1a1a1a]">
                 <Image
-                  src={gallery.coverPhoto || gallery.imageUrls[0]}
+                  src={gallery.coverPhotoHorizontal || gallery.coverPhoto || gallery.imageUrls[0]}
                   alt={gallery.title}
                   fill
                   sizes="(max-width: 768px) 288px, (max-width: 1024px) 320px, 384px"

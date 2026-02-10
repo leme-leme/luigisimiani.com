@@ -23,7 +23,7 @@ export default async function Home() {
     const gallery = await fetchGalleryById(id);
     if (gallery) {
       heroImages.push({
-        url: gallery.coverPhoto || gallery.imageUrls?.[0],
+        url: gallery.coverPhotoVertical || gallery.coverPhoto || gallery.imageUrls?.[0],
         galleryId: gallery.id,
       });
     }

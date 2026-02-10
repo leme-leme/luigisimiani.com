@@ -36,7 +36,7 @@ function GridItem({ doc, index }) {
             />
             <div className="project-grid-img-container">
               <Image
-                src={doc.coverPhoto}
+                src={doc.coverPhotoHorizontal || doc.coverPhoto}
                 alt={`${doc.title} - ${doc.subTitle}`}
                 className="project-grid-img"
                 width={960}

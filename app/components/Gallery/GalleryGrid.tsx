@@ -37,21 +37,25 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
                 transition={{ delay: index * 0.08, duration: 0.5 }}
               >
                 <Link href={`/gallery/${gallery.id}`} className="block">
-                  <div className="relative aspect-[4/3] overflow-hidden flex items-center justify-center">
+                  {/* Horizontal cover for work page */}
+                  <div className="relative aspect-[4/3] overflow-hidden flex items-center justify-center bg-[#1a1a1a]">
                     <Image
-                      src={gallery.coverPhoto || gallery.imageUrls[0]}
+                      src={gallery.coverPhotoHorizontal || gallery.coverPhoto || gallery.imageUrls[0]}
                       alt={gallery.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <h2 className="text-sm uppercase tracking-wider text-white">{gallery.title}</h2>
-                    {gallery.subTitle && (
-                      <p className="text-xs text-white/70 mt-1">{gallery.subTitle}</p>
-                    )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    
+                    {/* Title - Always visible on mobile, visible on hover on desktop */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-300">
+                      <h2 className="text-sm md:text-base uppercase tracking-wider text-white font-medium">{gallery.title}</h2>
+                      {gallery.subTitle && (
+                        <p className="text-xs text-white/70 mt-1">{gallery.subTitle}</p>
+                      )}
+                    </div>
                   </div>
                 </Link>
               </motion.article>

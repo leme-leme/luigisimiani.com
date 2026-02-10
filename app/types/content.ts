@@ -56,6 +56,8 @@ export interface Gallery {
   category?: string | string[];
   tags?: string[];
   coverPhoto?: string;
+  coverPhotoHorizontal?: string;
+  coverPhotoVertical?: string;
   imageUrls: string[];
   imageAspectRatios?: number[];
   featured?: boolean;
