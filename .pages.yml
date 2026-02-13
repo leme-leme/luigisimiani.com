@@ -1,0 +1,132 @@
+# .pages.yml — leme media PagesCMS config for luigisimiani.com
+# Docs: https://pagescms.org/docs/configuration
+# Managed by: leme media
+
+media:
+  - name: images
+    label: Images
+    input: public/images
+    output: /images
+    categories: [ image ]
+
+content:
+  - name: settings
+    label: Site Settings
+    type: file
+    path: content/settings.json
+    format: json
+    fields:
+      - name: heroTitle
+        label: Hero Title
+        type: string
+      - name: featuredTitle
+        label: Featured Section Title
+        type: string
+
+  - name: bio
+    label: Bio
+    type: file
+    path: content/bio.json
+    format: json
+    fields:
+      - name: paragraphs
+        label: Paragraphs
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: ID
+            type: string
+            hidden: true
+          - name: value
+            label: Text
+            type: text
+
+  - name: galleries
+    label: Galleries
+    type: collection
+    path: content/gallery
+    format: json
+    filename: "{primary}.json"
+    fields:
+      - name: id
+        label: Slug
+        type: string
+        required: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: subTitle
+        label: Subtitle
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: coverPhoto
+        label: Cover Photo
+        type: image
+      - name: imageUrls
+        label: Photos
+        type: image
+        list: true
+      - name: password
+        label: Password
+        type: string
+        description: Leave empty for public galleries
+    view:
+      fields: [ title, date ]
+      sort: [ date, title ]
+      default:
+        sort: date
+        order: desc
+
+  - name: featured
+    label: Featured
+    type: file
+    path: content/featured.json
+    format: json
+    fields:
+      - name: galleries
+        label: Featured Galleries
+        type: string
+        list: true
+        description: Gallery IDs to feature on the homepage
+
+  - name: contact
+    label: Contact
+    type: file
+    path: content/contact.json
+    format: json
+    fields:
+      - name: email
+        label: Email
+        type: string
+      - name: instagram
+        label: Instagram
+        type: string
+      - name: phone
+        label: Phone
+        type: string
+
+  - name: quotes
+    label: Quotes
+    type: file
+    path: content/quotes.json
+    format: json
+    fields:
+      - name: quotes
+        label: Quotes
+        type: object
+        list: true
+        fields:
+          - name: text
+            label: Quote
+            type: text
+          - name: author
+            label: Author
+            type: string
+
+settings:
+  content:
+    merge: true
