@@ -2,26 +2,15 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Local images only - no remote patterns needed
+  // Static export for Cloudflare Pages
+  output: "export",
+
+  // Images must be unoptimized for static export
   images: {
-    unoptimized: false,
+    unoptimized: true,
   },
-  // Rewrite /admin to serve static admin page
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: "/admin",
-          destination: "/admin/index.html",
-        },
-        {
-          source: "/config.yml",
-          destination: "/admin/config.yml",
-        },
-      ],
-    };
-  },
-  // Security headers for production
+
+  // Security headers (handled by Cloudflare in production)
   async headers() {
     return [
       {
@@ -59,6 +48,7 @@ const nextConfig = {
       },
     ];
   },
+
   // Compression and performance
   compress: true,
   poweredByHeader: false,
