@@ -1,48 +1,66 @@
 /**
- * Content loading utilities - replaces Firebase with static JSON
- * Drop-in replacement for app/service/fetchDocs.js
+ * Content loading utilities - static imports for Cloudflare Workers compatibility
+ * JSON is resolved at build time by Next.js bundler (no runtime fs needed)
  */
 
 import { cache } from "react";
-import fs from "fs/promises";
-import path from "path";
 import type { Gallery, DisplaySize } from "@/app/types/content";
 
-const CONTENT_DIR = path.join(process.cwd(), "content");
+// --- Static imports: bundled at build time ---
+import bioData from "@/content/bio.json";
+import contactData from "@/content/contact.json";
+import featuredData from "@/content/featured.json";
+import filmStripData from "@/content/film-strip.json";
+import quotesData from "@/content/quotes.json";
+import settingsData from "@/content/settings.json";
+
+// Gallery imports
+import alphaXJunyaWatanabe from "@/content/gallery/alpha-x-junya-watanabe.json";
+import diesel2024 from "@/content/gallery/diesel-2024.json";
+import dreamUnit from "@/content/gallery/dream-unit.json";
+import freeYourself from "@/content/gallery/free-yourself.json";
+import galleryMisc from "@/content/gallery/gallery.json";
+import laCassetteRunway from "@/content/gallery/la-cassette-runway.json";
+import nachbarPromotion from "@/content/gallery/nachbar-promotion.json";
+import orderTattooJam from "@/content/gallery/order-tattoo-jam.json";
+import pattaXKeepHush from "@/content/gallery/patta-x-keep-hush-noiz-boiz.json";
+import procidaWedding from "@/content/gallery/procida-wedding.json";
+import productPhotography from "@/content/gallery/product-photography.json";
+import sexyland from "@/content/gallery/sexyland.json";
+import tgib from "@/content/gallery/tgib.json";
+import vogue2024 from "@/content/gallery/vogue-2024.json";
+import wingstopXSmib from "@/content/gallery/wingstop-x-smib.json";
 
 type ContentDoc = Record<string, unknown>;
 
-/**
- * Read and parse a JSON file
- */
-async function readJsonFile<T>(filePath: string): Promise<T | null> {
-  try {
-    const fullPath = path.join(CONTENT_DIR, filePath);
-    const content = await fs.readFile(fullPath, "utf-8");
-    return JSON.parse(content) as T;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      console.error(`Error reading content file: ${filePath}`, error);
-    }
-    return null;
-  }
-}
+// --- Gallery registry (keyed by filename without .json) ---
+const GALLERY_MAP: Record<string, Gallery> = {
+  "alpha-x-junya-watanabe": alphaXJunyaWatanabe as unknown as Gallery,
+  "diesel-2024": diesel2024 as unknown as Gallery,
+  "dream-unit": dreamUnit as unknown as Gallery,
+  "free-yourself": freeYourself as unknown as Gallery,
+  "gallery": galleryMisc as unknown as Gallery,
+  "la-cassette-runway": laCassetteRunway as unknown as Gallery,
+  "nachbar-promotion": nachbarPromotion as unknown as Gallery,
+  "order-tattoo-jam": orderTattooJam as unknown as Gallery,
+  "patta-x-keep-hush-noiz-boiz": pattaXKeepHush as unknown as Gallery,
+  "procida-wedding": procidaWedding as unknown as Gallery,
+  "product-photography": productPhotography as unknown as Gallery,
+  "sexyland": sexyland as unknown as Gallery,
+  "tgib": tgib as unknown as Gallery,
+  "vogue-2024": vogue2024 as unknown as Gallery,
+  "wingstop-x-smib": wingstopXSmib as unknown as Gallery,
+};
 
-/**
- * Get all JSON files from a directory
- */
-async function getFilesFromDir(dirPath: string): Promise<string[]> {
-  try {
-    const fullPath = path.join(CONTENT_DIR, dirPath);
-    const files = await fs.readdir(fullPath);
-    return files.filter((file) => file.endsWith(".json"));
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      console.error(`Error reading directory: ${dirPath}`, error);
-    }
-    return [];
-  }
-}
+// --- Single-file content registry ---
+const CONTENT_MAP: Record<string, ContentDoc> = {
+  bio: bioData as unknown as ContentDoc,
+  contact: contactData as unknown as ContentDoc,
+  featured: featuredData as unknown as ContentDoc,
+  "film-strip": filmStripData as unknown as ContentDoc,
+  quotes: quotesData as unknown as ContentDoc,
+  settings: settingsData as unknown as ContentDoc,
+};
 
 /**
  * Fetch documents from a collection path
@@ -55,45 +73,34 @@ export const fetchDocs = cache(async (ref: string): Promise<ContentDoc[]> => {
       return [];
     }
 
-    // Use the path directly (e.g., "gallery/analog", "featured/vertical")
-    const contentPath = ref;
-
-    // Check if it's a single file or directory
-    const singleFilePath = `${contentPath}.json`;
-    const singleFile = await readJsonFile<ContentDoc | ContentDoc[]>(singleFilePath);
-
+    // Check single-file content first
+    const singleFile = CONTENT_MAP[ref] as ContentDoc | ContentDoc[] | undefined;
     if (singleFile) {
-      if (Array.isArray(singleFile)) {
-        return singleFile;
-      }
-      if (singleFile.items) {
-        return singleFile.items as ContentDoc[];
-      }
-      if (singleFile.images) {
-        return singleFile.images as ContentDoc[];
-      }
-      if (singleFile.paragraphs) {
-        return singleFile.paragraphs as ContentDoc[];
-      }
+      if (Array.isArray(singleFile)) return singleFile;
+      if ((singleFile as any).items) return (singleFile as any).items as ContentDoc[];
+      if ((singleFile as any).images) return (singleFile as any).images as ContentDoc[];
+      if ((singleFile as any).paragraphs) return (singleFile as any).paragraphs as ContentDoc[];
       return [singleFile];
     }
 
-    // Try reading as directory
-    const files = await getFilesFromDir(contentPath);
-    const docs: ContentDoc[] = [];
-
-    for (const file of files) {
-      const data = await readJsonFile<ContentDoc>(`${contentPath}/${file}`);
-      if (data) {
-        docs.push({ ...data, id: file.replace(".json", "") });
-      }
+    // Check if it's a gallery directory request
+    if (ref === "gallery") {
+      return Object.entries(GALLERY_MAP).map(([id, g]) => ({ ...g, id } as unknown as ContentDoc))
+        .sort((a, b) => {
+          const dateA = (a as any).date ? new Date((a as any).date).getTime() : 0;
+          const dateB = (b as any).date ? new Date((b as any).date).getTime() : 0;
+          return dateB - dateA;
+        });
     }
 
-    return docs.sort((a, b) => {
-      const dateA = a.date ? new Date(a.date as string).getTime() : 0;
-      const dateB = b.date ? new Date(b.date as string).getTime() : 0;
-      return dateB - dateA;
-    });
+    // Check gallery sub-path (e.g. "gallery/vogue-2024")
+    if (ref.startsWith("gallery/")) {
+      const id = ref.replace("gallery/", "");
+      const g = GALLERY_MAP[id];
+      if (g) return [{ ...g, id } as unknown as ContentDoc];
+    }
+
+    return [];
   } catch (error) {
     console.error("Error fetching docs from", ref, ":", error);
     return [];
@@ -111,9 +118,16 @@ export const fetchDoc = cache(async (ref: string): Promise<ContentDoc> => {
       return {};
     }
 
-    // Use the path directly (e.g., "contact-info", "gallery/digital/project-name")
-    const data = await readJsonFile<ContentDoc>(`${ref}.json`);
-    return data || {};
+    // Check content map
+    if (CONTENT_MAP[ref]) return CONTENT_MAP[ref];
+
+    // Check gallery
+    if (ref.startsWith("gallery/")) {
+      const id = ref.replace("gallery/", "");
+      if (GALLERY_MAP[id]) return GALLERY_MAP[id] as unknown as ContentDoc;
+    }
+
+    return {};
   } catch (error) {
     console.error("Error fetching doc from", ref, ":", error);
     return {};
@@ -134,86 +148,58 @@ export const fetchUrls = cache(async (ref: string): Promise<string[]> => {
 });
 
 /**
- * Normalize tags - handles both array elements and comma-separated strings
+ * Normalize tags
  */
 function normalizeTags(tags?: string[]): string[] {
   if (!tags) return [];
   const normalized: string[] = [];
   for (const tag of tags) {
-    // Split by comma and trim whitespace
     const parts = tag.split(",").map((t) => t.trim().toLowerCase());
     normalized.push(...parts.filter(Boolean));
   }
   return normalized;
 }
 
-/**
- * Check if a gallery has a specific tag
- */
 export function hasTag(gallery: Gallery, tag: string): boolean {
-  const tags = normalizeTags(gallery.tags);
-  return tags.includes(tag.toLowerCase());
+  return normalizeTags(gallery.tags).includes(tag.toLowerCase());
 }
 
-/**
- * Check if a gallery is hidden (has "hidden" tag)
- */
 export function isHidden(gallery: Gallery): boolean {
   return hasTag(gallery, "hidden");
 }
 
-/**
- * Check if a gallery is downloadable (has "downloadable" tag)
- */
 export function isDownloadable(gallery: Gallery): boolean {
   return hasTag(gallery, "downloadable");
 }
 
-/**
- * Check if a gallery is password protected (has non-empty password)
- */
 export function isPasswordProtected(gallery: Gallery): boolean {
   return Boolean(gallery.password && gallery.password.trim() !== "");
 }
 
 /**
  * Fetch galleries, optionally filtered by category
- * By default excludes galleries with "hidden" tag from public listings
  */
 export const fetchGalleries = cache(
   async (category?: string, includeHidden = false): Promise<Gallery[]> => {
     try {
-      // Read individual gallery files from content/gallery folder
-      const galleryDir = path.join(CONTENT_DIR, "gallery");
-      const files = await fs.readdir(galleryDir);
-      const jsonFiles = files.filter((f) => f.endsWith(".json"));
+      let galleries = Object.entries(GALLERY_MAP).map(([id, g]) => ({ ...g, id }));
 
-      const galleries: Gallery[] = [];
-      for (const file of jsonFiles) {
-        const data = await readJsonFile<Gallery>(`gallery/${file}`);
-        if (data) {
-          galleries.push(data);
-        }
+      // Filter hidden
+      if (!includeHidden) {
+        galleries = galleries.filter((g) => !isHidden(g));
       }
 
-      // Filter out hidden galleries unless explicitly included
-      let filtered = includeHidden
-        ? galleries
-        : galleries.filter((g) => !isHidden(g));
-
-      // Filter by tag if specified (supports both tags and legacy category)
+      // Filter by category/tag
       if (category) {
-        filtered = filtered.filter((g) => {
-          // Check tags array first
+        galleries = galleries.filter((g) => {
           if (g.tags?.includes(category)) return true;
-          // Fall back to category for backwards compatibility
           if (Array.isArray(g.category)) return g.category.includes(category);
           return g.category === category;
         });
       }
 
       // Sort by date (newest first)
-      return filtered.sort((a, b) => {
+      return galleries.sort((a, b) => {
         const dateA = a.date ? new Date(a.date).getTime() : 0;
         const dateB = b.date ? new Date(b.date).getTime() : 0;
         return dateB - dateA;
@@ -230,19 +216,12 @@ export const fetchGalleries = cache(
  */
 export const fetchGalleryById = cache(
   async (id: string): Promise<Gallery | null> => {
-    try {
-      const data = await readJsonFile<Gallery>(`gallery/${id}.json`);
-      return data;
-    } catch (error) {
-      console.error("Error fetching gallery by id:", id, error);
-      return null;
-    }
+    return GALLERY_MAP[id] ? { ...GALLERY_MAP[id], id } : null;
   }
 );
 
 /**
- * Fetch featured galleries for homepage
- * Featured = has "featured" tag OR featured: true (legacy)
+ * Fetch featured galleries
  */
 export const fetchFeaturedGalleries = cache(async (): Promise<Gallery[]> => {
   try {
@@ -257,54 +236,7 @@ export const fetchFeaturedGalleries = cache(async (): Promise<Gallery[]> => {
 });
 
 /**
- * Fetch protected gallery by slug
- */
-export const fetchProtectedGallery = cache(
-  async (slug: string): Promise<Gallery | null> => {
-    try {
-      const data = await readJsonFile<Gallery>(`galleries/${slug}.json`);
-      return data;
-    } catch (error) {
-      console.error("Error fetching gallery:", slug, error);
-      return null;
-    }
-  }
-);
-
-/**
- * Verify gallery password
- * Returns true if gallery is public (no password) or password matches
- */
-export async function verifyGalleryPassword(
-  slug: string,
-  password: string
-): Promise<boolean> {
-  const gallery = await fetchGalleryById(slug);
-  if (!gallery) return false;
-  // If no password set, gallery is public
-  if (!isPasswordProtected(gallery)) return true;
-  // Check password match
-  return gallery.password === password;
-}
-
-/**
- * Generate blur placeholder for images
- */
-export function generateBlurPlaceholder(width = 10, height = 10): string {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
-      <filter id="b" color-interpolation-filters="sRGB">
-        <feGaussianBlur stdDeviation="1" />
-      </filter>
-      <rect width="100%" height="100%" fill="#1a1a1a" filter="url(#b)" />
-    </svg>
-  `;
-  const base64 = Buffer.from(svg).toString("base64");
-  return `data:image/svg+xml;base64,${base64}`;
-}
-
-/**
- * Tag-to-layout mapping for display sizes
+ * Tag-to-layout mapping
  */
 const TAG_TO_SIZE: Record<string, DisplaySize> = {
   hero: "full",
@@ -319,33 +251,21 @@ const TAG_TO_SIZE: Record<string, DisplaySize> = {
 };
 
 /**
- * Compute display size for a gallery based on tags and aspect ratio
- * 1. Check tags for layout keywords
- * 2. Fall back to aspect ratio: >= 2.0 = full, < 0.8 = third, else half
+ * Compute display size for a gallery
  */
 export function computeDisplaySize(gallery: Gallery): DisplaySize {
-  // Get all tags (from tags array or convert category to array)
   const tags: string[] = [];
-  if (gallery.tags) {
-    tags.push(...gallery.tags);
-  }
+  if (gallery.tags) tags.push(...gallery.tags);
   if (gallery.category) {
-    if (Array.isArray(gallery.category)) {
-      tags.push(...gallery.category);
-    } else {
-      tags.push(gallery.category);
-    }
+    if (Array.isArray(gallery.category)) tags.push(...gallery.category);
+    else tags.push(gallery.category);
   }
 
-  // Check tags for layout hints
   for (const tag of tags) {
     const normalizedTag = tag.toLowerCase();
-    if (TAG_TO_SIZE[normalizedTag]) {
-      return TAG_TO_SIZE[normalizedTag];
-    }
+    if (TAG_TO_SIZE[normalizedTag]) return TAG_TO_SIZE[normalizedTag];
   }
 
-  // Fall back to aspect ratio of cover image
   const aspectRatio = gallery.imageAspectRatios?.[0] ?? 1.5;
   if (aspectRatio >= 2.0) return "full";
   if (aspectRatio < 0.8) return "third";
@@ -353,27 +273,22 @@ export function computeDisplaySize(gallery: Gallery): DisplaySize {
 }
 
 /**
- * Fetch featured galleries with computed display sizes for layout
- * Featured = has "featured" tag OR featured: true (legacy)
- * Excludes hidden galleries
+ * Fetch featured galleries with computed display sizes
  */
 export const fetchFeaturedGalleriesWithLayout = cache(
   async (): Promise<Gallery[]> => {
     try {
-      // fetchGalleries already excludes hidden galleries by default
       const allGalleries = await fetchGalleries();
       const featured = allGalleries.filter(
         (g) => g.featured === true || g.tags?.includes("featured")
       );
 
-      // Sort by date (newest first)
       const sorted = featured.sort((a, b) => {
         const dateA = a.date ? new Date(a.date).getTime() : 0;
         const dateB = b.date ? new Date(b.date).getTime() : 0;
         return dateB - dateA;
       });
 
-      // Add computed display sizes
       return sorted.map((gallery) => ({
         ...gallery,
         displaySize: computeDisplaySize(gallery),
@@ -384,3 +299,32 @@ export const fetchFeaturedGalleriesWithLayout = cache(
     }
   }
 );
+
+/**
+ * Verify gallery password
+ */
+export async function verifyGalleryPassword(
+  slug: string,
+  password: string
+): Promise<boolean> {
+  const gallery = await fetchGalleryById(slug);
+  if (!gallery) return false;
+  if (!isPasswordProtected(gallery)) return true;
+  return gallery.password === password;
+}
+
+/**
+ * Generate blur placeholder
+ */
+export function generateBlurPlaceholder(width = 10, height = 10): string {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
+      <filter id="b" color-interpolation-filters="sRGB">
+        <feGaussianBlur stdDeviation="1" />
+      </filter>
+      <rect width="100%" height="100%" fill="#1a1a1a" filter="url(#b)" />
+    </svg>
+  `;
+  const base64 = Buffer.from(svg).toString("base64");
+  return `data:image/svg+xml;base64,${base64}`;
+}
