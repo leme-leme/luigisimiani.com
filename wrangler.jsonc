@@ -7,5 +7,11 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "luigi.leme.work/*",
+      "zone_name": "leme.work"
+    }
+  ]
 }
