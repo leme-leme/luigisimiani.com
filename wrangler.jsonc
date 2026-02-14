@@ -6,12 +6,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "routes": [
-    {
-      "pattern": "luigi.leme.work/*",
-      "zone_name": "leme.work"
-    }
-  ]
+    "binding": "ASSETS",
+    "html_handling": "none",
+    "not_found_handling": "none"
+  }
 }
