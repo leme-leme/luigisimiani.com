@@ -120,7 +120,7 @@ content:
         label: Tags
         type: string
         list: true
-        description: "e.g. featured, homepage, editorial, portrait"
+        description: "e.g. featured, homepage, editorial, portrait, downloadable"
       - name: date
         label: Date
         type: date
