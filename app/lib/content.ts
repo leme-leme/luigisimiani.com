@@ -13,6 +13,7 @@ import featuredData from "@/content/featured.json";
 import filmStripData from "@/content/film-strip.json";
 import quotesData from "@/content/quotes.json";
 import settingsData from "@/content/settings.json";
+import heroData from "@/content/hero.json";
 
 // Gallery imports
 import alphaXJunyaWatanabe from "@/content/gallery/alpha-x-junya-watanabe.json";
@@ -60,6 +61,7 @@ const CONTENT_MAP: Record<string, ContentDoc> = {
   "film-strip": filmStripData as unknown as ContentDoc,
   quotes: quotesData as unknown as ContentDoc,
   settings: settingsData as unknown as ContentDoc,
+  hero: heroData as unknown as ContentDoc,
 };
 
 /**

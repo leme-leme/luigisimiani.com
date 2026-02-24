@@ -7,21 +7,23 @@ import { useMenuStore } from "@/app/context/UIContext";
 
 const SLIDE_DURATION = 5000;
 
-export default function HeroSlideshow({ images }) {
+export default function HeroSlideshow({ slides }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { isMenuVisible } = useMenuStore();
 
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-  }, [images.length]);
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
 
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (slides.length <= 1) return;
     const interval = setInterval(nextSlide, SLIDE_DURATION);
     return () => clearInterval(interval);
-  }, [nextSlide, images.length]);
+  }, [nextSlide, slides.length]);
 
-  if (!images || images.length === 0) return null;
+  if (!slides || slides.length === 0) return null;
+
+  const current = slides[currentIndex];
 
   return (
     <AnimatePresence>
@@ -43,12 +45,23 @@ export default function HeroSlideshow({ images }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
+              {/* Desktop image (vertical/portrait) - hidden on mobile */}
               <Image
-                src={images[currentIndex].url}
+                src={current.desktopImage}
                 alt=""
                 fill
                 priority={currentIndex === 0}
-                className="object-cover pointer-events-none"
+                className="object-cover pointer-events-none hidden md:block"
+                sizes="100vw"
+                draggable={false}
+              />
+              {/* Mobile image (horizontal/landscape) - hidden on desktop */}
+              <Image
+                src={current.mobileImage}
+                alt=""
+                fill
+                priority={currentIndex === 0}
+                className="object-cover pointer-events-none block md:hidden"
                 sizes="100vw"
                 draggable={false}
               />
@@ -58,9 +71,9 @@ export default function HeroSlideshow({ images }) {
           </AnimatePresence>
 
           {/* Slide indicators */}
-          {images.length > 1 && (
+          {slides.length > 1 && (
             <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {images.map((_, idx) => (
+              {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}

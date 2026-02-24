@@ -11,31 +11,54 @@ import {
 export const revalidate = 3600;
 
 export default async function Home() {
+  const heroData = await fetchDoc("hero");
   const featured = await fetchDoc("featured");
   const quotesData = await fetchDoc("quotes");
   const featuredGalleries = await fetchFeaturedGalleriesWithLayout();
 
-  // Get hero images from gallery references
-  const galleryIds = featured.galleries || [];
-  const heroImages = [];
+  // Build hero slides with separate desktop/mobile images
+  const heroSlides = heroData.slides || [];
+  const slides = [];
 
-  for (const id of galleryIds) {
-    const gallery = await fetchGalleryById(id);
-    if (gallery) {
-      heroImages.push({
-        url: gallery.coverPhoto || gallery.imageUrls?.[0],
-        galleryId: gallery.id,
-      });
+  for (const slide of heroSlides) {
+    const gallery = slide.galleryId
+      ? await fetchGalleryById(slide.galleryId)
+      : null;
+    slides.push({
+      desktopImage:
+        slide.desktopImage ||
+        gallery?.coverPhoto ||
+        gallery?.imageUrls?.[0],
+      mobileImage:
+        slide.mobileImage ||
+        gallery?.coverPhoto ||
+        gallery?.imageUrls?.[0],
+      galleryId: slide.galleryId,
+    });
+  }
+
+  // Fallback: if no hero.json slides, use featured galleries
+  if (slides.length === 0) {
+    const galleryIds = featured.galleries || [];
+    for (const id of galleryIds) {
+      const gallery = await fetchGalleryById(id);
+      if (gallery) {
+        const img = gallery.coverPhoto || gallery.imageUrls?.[0];
+        slides.push({
+          desktopImage: img,
+          mobileImage: img,
+          galleryId: gallery.id,
+        });
+      }
     }
   }
 
-  // Get quotes
   const quotes = quotesData.quotes || [];
 
   return (
     <>
       <Menu />
-      <HeroSlideshow images={heroImages} />
+      <HeroSlideshow slides={slides} />
       <HomeFlowers />
       <FeaturedWork galleries={featuredGalleries} quotes={quotes} />
     </>
