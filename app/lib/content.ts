@@ -7,13 +7,11 @@ import { cache } from "react";
 import type { Gallery, DisplaySize } from "@/app/types/content";
 
 // --- Static imports: bundled at build time ---
-import bioData from "@/content/bio.json";
 import contactData from "@/content/contact.json";
 import featuredData from "@/content/featured.json";
-import filmStripData from "@/content/film-strip.json";
-import quotesData from "@/content/quotes.json";
 import settingsData from "@/content/settings.json";
-import heroData from "@/content/hero.json";
+import homeData from "@/content/home.json";
+import aboutData from "@/content/about.json";
 
 // Gallery imports
 import alphaXJunyaWatanabe from "@/content/gallery/alpha-x-junya-watanabe.json";
@@ -55,13 +53,11 @@ const GALLERY_MAP: Record<string, Gallery> = {
 
 // --- Single-file content registry ---
 const CONTENT_MAP: Record<string, ContentDoc> = {
-  bio: bioData as unknown as ContentDoc,
   contact: contactData as unknown as ContentDoc,
   featured: featuredData as unknown as ContentDoc,
-  "film-strip": filmStripData as unknown as ContentDoc,
-  quotes: quotesData as unknown as ContentDoc,
   settings: settingsData as unknown as ContentDoc,
-  hero: heroData as unknown as ContentDoc,
+  home: homeData as unknown as ContentDoc,
+  about: aboutData as unknown as ContentDoc,
 };
 
 /**

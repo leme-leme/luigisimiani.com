@@ -11,13 +11,11 @@ import {
 export const revalidate = 3600;
 
 export default async function Home() {
-  const heroData = await fetchDoc("hero");
-  const featured = await fetchDoc("featured");
-  const quotesData = await fetchDoc("quotes");
+  const homeData = await fetchDoc("home");
   const featuredGalleries = await fetchFeaturedGalleriesWithLayout();
 
   // Build hero slides with separate desktop/mobile images
-  const heroSlides = heroData.slides || [];
+  const heroSlides = homeData.slides || [];
   const slides = [];
 
   for (const slide of heroSlides) {
@@ -37,23 +35,7 @@ export default async function Home() {
     });
   }
 
-  // Fallback: if no hero.json slides, use featured galleries
-  if (slides.length === 0) {
-    const galleryIds = featured.galleries || [];
-    for (const id of galleryIds) {
-      const gallery = await fetchGalleryById(id);
-      if (gallery) {
-        const img = gallery.coverPhoto || gallery.imageUrls?.[0];
-        slides.push({
-          desktopImage: img,
-          mobileImage: img,
-          galleryId: gallery.id,
-        });
-      }
-    }
-  }
-
-  const quotes = quotesData.quotes || [];
+  const quotes = homeData.quotes || [];
 
   return (
     <>

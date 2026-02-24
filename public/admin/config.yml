@@ -14,26 +14,18 @@ collections:
   - name: home
     label: Home
     files:
-      - name: hero
-        label: Hero Slideshow
-        file: content/hero.json
+      - name: home
+        label: Home
+        file: content/home.json
         format: json
-        description: "Full-screen hero — set separate vertical (desktop) and horizontal (mobile) images"
         fields:
           - name: slides
-            label: Slides
+            label: Hero Slideshow
             widget: list
             fields:
               - { name: galleryId, label: Link to Gallery, widget: string, hint: "Gallery slug (e.g. vogue-2024)" }
-              - { name: desktopImage, label: Desktop Image (vertical), widget: image, hint: "Portrait image for desktop" }
-              - { name: mobileImage, label: Mobile Image (horizontal), widget: image, hint: "Landscape image for mobile" }
-
-      - name: quotes
-        label: Quotes
-        file: content/quotes.json
-        format: json
-        description: "Displayed between featured galleries"
-        fields:
+              - { name: desktopImage, label: Desktop Image (vertical), widget: image }
+              - { name: mobileImage, label: Mobile Image (horizontal), widget: image }
           - name: quotes
             label: Quotes
             widget: list
@@ -44,34 +36,27 @@ collections:
   - name: about
     label: About
     files:
-      - name: bio
-        label: Bio
-        file: content/bio.json
+      - name: about
+        label: About
+        file: content/about.json
         format: json
         fields:
           - name: paragraphs
-            label: Paragraphs
+            label: Bio
             widget: list
             fields:
               - { name: id, label: ID, widget: string, required: false }
               - { name: value, label: Text, widget: text }
-
-      - name: film-strip
-        label: Film Strip
-        file: content/film-strip.json
-        format: json
-        description: "Scrolling film strip on About page"
-        fields:
-          - name: images
-            label: Images
+          - name: filmStrip
+            label: Film Strip
             widget: list
             field: { name: url, label: Image, widget: image }
 
   - name: contact
     label: Contact
     files:
-      - name: contact-info
-        label: Contact Info
+      - name: contact
+        label: Contact
         file: content/contact.json
         format: json
         fields:
@@ -91,7 +76,7 @@ collections:
     summary: "{{title}}"
     sortable_fields: [title, date]
     fields:
-      - { name: id, label: Slug, widget: string, hint: "URL-safe ID (e.g. vogue-2024)" }
+      - { name: id, label: Slug, widget: string }
       - { name: title, label: Title, widget: string }
       - { name: subTitle, label: Subtitle, widget: string, required: false }
       - { name: date, label: Date, widget: datetime, required: false }

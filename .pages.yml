@@ -10,17 +10,14 @@ media:
     categories: [ image ]
 
 content:
-  # ─── HOME ───────────────────────────────────────
-
-  - name: hero-slideshow
-    label: "Home: Hero Slideshow"
+  - name: home
+    label: Home
     type: file
-    path: content/hero.json
+    path: content/home.json
     format: json
-    description: "Full-screen hero slides with separate desktop/mobile images"
     fields:
       - name: slides
-        label: Slides
+        label: Hero Slideshow
         type: object
         list: true
         fields:
@@ -31,19 +28,9 @@ content:
           - name: desktopImage
             label: Desktop Image (vertical)
             type: image
-            description: "Portrait/vertical for desktop screens"
           - name: mobileImage
             label: Mobile Image (horizontal)
             type: image
-            description: "Landscape/horizontal for mobile screens"
-
-  - name: quotes
-    label: "Home: Quotes"
-    type: file
-    path: content/quotes.json
-    format: json
-    description: "Displayed between featured galleries on the homepage"
-    fields:
       - name: quotes
         label: Quotes
         type: object
@@ -56,16 +43,14 @@ content:
             label: Author
             type: string
 
-  # ─── ABOUT ──────────────────────────────────────
-
-  - name: bio
-    label: "About: Bio"
+  - name: about
+    label: About
     type: file
-    path: content/bio.json
+    path: content/about.json
     format: json
     fields:
       - name: paragraphs
-        label: Paragraphs
+        label: Bio
         type: object
         list: true
         fields:
@@ -76,23 +61,13 @@ content:
           - name: value
             label: Text
             type: text
-
-  - name: film-strip
-    label: "About: Film Strip"
-    type: file
-    path: content/film-strip.json
-    format: json
-    description: "Scrolling film strip on the About page"
-    fields:
-      - name: images
-        label: Images
+      - name: filmStrip
+        label: Film Strip
         type: image
         list: true
 
-  # ─── CONTACT ────────────────────────────────────
-
   - name: contact
-    label: "Contact"
+    label: Contact
     type: file
     path: content/contact.json
     format: json
@@ -110,10 +85,8 @@ content:
         label: LinkedIn
         type: string
 
-  # ─── GALLERY ────────────────────────────────────
-
   - name: galleries
-    label: "Gallery"
+    label: Gallery
     type: collection
     path: content/gallery
     format: json
