@@ -163,7 +163,7 @@ export function hasTag(gallery: Gallery, tag: string): boolean {
 }
 
 export function isHidden(gallery: Gallery): boolean {
-  return hasTag(gallery, "hidden");
+  return gallery.visibility === "hidden" || hasTag(gallery, "hidden");
 }
 
 export function isDownloadable(gallery: Gallery): boolean {
@@ -171,7 +171,7 @@ export function isDownloadable(gallery: Gallery): boolean {
 }
 
 export function isPasswordProtected(gallery: Gallery): boolean {
-  return Boolean(gallery.password && gallery.password.trim() !== "");
+  return gallery.visibility === "password" || Boolean(gallery.password && gallery.password.trim() !== "");
 }
 
 /**
@@ -225,7 +225,7 @@ export const fetchFeaturedGalleries = cache(async (): Promise<Gallery[]> => {
   try {
     const allGalleries = await fetchGalleries();
     return allGalleries.filter(
-      (g) => g.featured === true || g.tags?.includes("featured")
+      (g) => g.featured === true || g.tags?.includes("featured") || g.tags?.includes("homepage")
     );
   } catch (error) {
     console.error("Error fetching featured galleries:", error);
@@ -278,7 +278,7 @@ export const fetchFeaturedGalleriesWithLayout = cache(
     try {
       const allGalleries = await fetchGalleries();
       const featured = allGalleries.filter(
-        (g) => g.featured === true || g.tags?.includes("featured")
+        (g) => g.featured === true || g.tags?.includes("featured") || g.tags?.includes("homepage")
       );
 
       const sorted = featured.sort((a, b) => {

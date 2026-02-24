@@ -55,6 +55,7 @@ export interface Gallery {
   date?: string;
   category?: string | string[];
   tags?: string[];
+  visibility?: "public" | "password" | "hidden";
   coverPhoto?: string;
   imageUrls: string[];
   imageAspectRatios?: number[];

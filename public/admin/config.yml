@@ -79,8 +79,18 @@ collections:
       - { name: id, label: Slug, widget: string }
       - { name: title, label: Title, widget: string }
       - { name: subTitle, label: Subtitle, widget: string, required: false }
+      - name: visibility
+        label: Visibility
+        widget: select
+        options: ["public", "password", "hidden"]
+        default: "public"
+      - { name: password, label: Password, widget: string, required: false, hint: "Only when visibility is 'password'" }
+      - name: tags
+        label: Tags
+        widget: list
+        field: { name: tag, label: Tag, widget: string }
+        hint: "e.g. featured, homepage, editorial, portrait"
       - { name: date, label: Date, widget: datetime, required: false }
-      - { name: password, label: Password, widget: string, required: false, hint: "Leave empty for public" }
       - { name: coverPhoto, label: Cover Photo, widget: image }
       - name: imageUrls
         label: Gallery Images

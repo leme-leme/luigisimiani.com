@@ -103,13 +103,26 @@ content:
       - name: subTitle
         label: Subtitle
         type: string
-      - name: date
-        label: Date
-        type: date
+      - name: visibility
+        label: Visibility
+        type: select
+        options:
+          - { value: public, label: Public }
+          - { value: password, label: Password Protected }
+          - { value: hidden, label: Hidden }
+        default: public
       - name: password
         label: Password
         type: string
-        description: "Leave empty for public galleries"
+        description: "Only used when visibility is 'Password Protected'"
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+        description: "e.g. featured, homepage, editorial, portrait"
+      - name: date
+        label: Date
+        type: date
       - name: coverPhoto
         label: Cover Photo
         type: image
@@ -123,7 +136,7 @@ content:
         list: true
         hidden: true
     view:
-      fields: [ title, date ]
+      fields: [ title, visibility, tags, date ]
       sort: [ date, title ]
       default:
         sort: date
