@@ -10,10 +10,10 @@ media:
     categories: [ image ]
 
 content:
-  # ─── 🏠 HOME PAGE ───────────────────────────────
+  # ─── HOME ───────────────────────────────────────
 
   - name: hero-slideshow
-    label: "🏠 Hero Slideshow"
+    label: "Home: Hero Slideshow"
     type: file
     path: content/hero.json
     format: json
@@ -38,7 +38,7 @@ content:
             description: "Landscape/horizontal for mobile screens"
 
   - name: quotes
-    label: "🏠 Quotes"
+    label: "Home: Quotes"
     type: file
     path: content/quotes.json
     format: json
@@ -56,10 +56,10 @@ content:
             label: Author
             type: string
 
-  # ─── 👤 ABOUT ME ────────────────────────────────
+  # ─── ABOUT ──────────────────────────────────────
 
   - name: bio
-    label: "👤 Bio"
+    label: "About: Bio"
     type: file
     path: content/bio.json
     format: json
@@ -78,7 +78,7 @@ content:
             type: text
 
   - name: film-strip
-    label: "👤 Film Strip"
+    label: "About: Film Strip"
     type: file
     path: content/film-strip.json
     format: json
@@ -86,23 +86,13 @@ content:
     fields:
       - name: images
         label: Images
-        type: object
+        type: image
         list: true
-        fields:
-          - name: url
-            label: Image
-            type: image
-          - name: orientation
-            label: Orientation
-            type: string
-          - name: aspectRatio
-            label: Aspect Ratio
-            type: number
 
-  # ─── 📞 CONTACT ─────────────────────────────────
+  # ─── CONTACT ────────────────────────────────────
 
   - name: contact
-    label: "📞 Contact"
+    label: "Contact"
     type: file
     path: content/contact.json
     format: json
@@ -120,11 +110,10 @@ content:
         label: LinkedIn
         type: string
 
-  # ─── 📸 GALLERY ─────────────────────────────────
-  # Toggle "Featured" on a gallery to show it on the homepage.
+  # ─── GALLERY ────────────────────────────────────
 
   - name: galleries
-    label: "📸 Gallery Projects"
+    label: "Gallery"
     type: collection
     path: content/gallery
     format: json
@@ -141,12 +130,13 @@ content:
       - name: subTitle
         label: Subtitle
         type: string
-      - name: featured
-        label: "⭐ Featured on Homepage"
-        type: boolean
       - name: date
         label: Date
         type: date
+      - name: password
+        label: Password
+        type: string
+        description: "Leave empty for public galleries"
       - name: coverPhoto
         label: Cover Photo
         type: image
@@ -159,12 +149,8 @@ content:
         type: number
         list: true
         hidden: true
-      - name: password
-        label: Password
-        type: string
-        description: "Leave empty for public galleries"
     view:
-      fields: [ title, featured, date ]
+      fields: [ title, date ]
       sort: [ date, title ]
       default:
         sort: date

@@ -2,8 +2,8 @@ backend:
   name: github
   repo: leme-leme/luigisimiani
   branch: cms/sveltia
-  base_url: https://pages.leme.work
-  auth_endpoint: /api/auth
+  base_url: https://sveltia-cms-auth.leme.workers.dev
+  auth_endpoint: /
 
 media_folder: public/images
 public_folder: /images
@@ -11,9 +11,8 @@ public_folder: /images
 site_url: https://luigisimiani.vercel.app
 
 collections:
-  # ─── 🏠 HOME PAGE ───────────────────────────────
   - name: home
-    label: "🏠 Home"
+    label: Home
     files:
       - name: hero
         label: Hero Slideshow
@@ -42,9 +41,8 @@ collections:
               - { name: text, label: Quote, widget: text }
               - { name: author, label: Author, widget: string }
 
-  # ─── 👤 ABOUT ME ────────────────────────────────
   - name: about
-    label: "👤 About"
+    label: About
     files:
       - name: bio
         label: Bio
@@ -67,14 +65,10 @@ collections:
           - name: images
             label: Images
             widget: list
-            fields:
-              - { name: url, label: Image, widget: image }
-              - { name: orientation, label: Orientation, widget: select, options: [vertical, horizontal] }
-              - { name: aspectRatio, label: Aspect Ratio, widget: number, value_type: float }
+            field: { name: url, label: Image, widget: image }
 
-  # ─── 📞 CONTACT ─────────────────────────────────
   - name: contact
-    label: "📞 Contact"
+    label: Contact
     files:
       - name: contact-info
         label: Contact Info
@@ -86,25 +80,22 @@ collections:
           - { name: instagram, label: Instagram, widget: string }
           - { name: linkedin, label: LinkedIn, widget: string }
 
-  # ─── 📸 GALLERY ─────────────────────────────────
   - name: gallery
-    label: "📸 Gallery"
+    label: Gallery
     label_singular: Project
     folder: content/gallery
     format: json
     create: true
     slug: "{{fields.id}}"
     identifier_field: id
-    summary: "{{title}}{{' ⭐' | ternary(featured, '')}}"
-    sortable_fields: [title, featured, date]
-    view_filters:
-      - { label: "Featured", field: featured, pattern: true }
+    summary: "{{title}}"
+    sortable_fields: [title, date]
     fields:
       - { name: id, label: Slug, widget: string, hint: "URL-safe ID (e.g. vogue-2024)" }
       - { name: title, label: Title, widget: string }
       - { name: subTitle, label: Subtitle, widget: string, required: false }
-      - { name: featured, label: "⭐ Featured on Homepage", widget: boolean, default: false }
       - { name: date, label: Date, widget: datetime, required: false }
+      - { name: password, label: Password, widget: string, required: false, hint: "Leave empty for public" }
       - { name: coverPhoto, label: Cover Photo, widget: image }
       - name: imageUrls
         label: Gallery Images
@@ -115,4 +106,3 @@ collections:
         widget: list
         field: { name: ratio, label: Ratio, widget: number, value_type: float }
         required: false
-      - { name: password, label: Password, widget: string, required: false, hint: "Leave empty for public" }

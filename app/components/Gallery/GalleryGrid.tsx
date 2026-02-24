@@ -37,13 +37,13 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
                 transition={{ delay: index * 0.08, duration: 0.5 }}
               >
                 <Link href={`/gallery/${gallery.id}`} className="block">
-                  <div className="relative aspect-[4/3] overflow-hidden flex items-center justify-center">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
                       src={gallery.coverPhoto || gallery.imageUrls[0]}
                       alt={gallery.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
