@@ -8,20 +8,44 @@ backend:
 media_folder: public/images
 public_folder: /images
 
-site_url: https://luigisimiani.com
+site_url: https://luigisimiani.vercel.app
 
 collections:
-  - name: settings
-    label: "⚙️ Site Settings"
+  # ─── 🏠 HOME PAGE ───────────────────────────────
+  - name: home
+    label: "🏠 Home"
     files:
-      - name: settings
-        label: General Settings
-        file: content/settings.json
+      - name: hero
+        label: Hero Slideshow
+        file: content/hero.json
         format: json
+        description: "Full-screen hero — set separate vertical (desktop) and horizontal (mobile) images"
         fields:
-          - { name: heroTitle, label: Hero Title, widget: string, required: false }
-          - { name: featuredTitle, label: Featured Section Title, widget: string }
+          - name: slides
+            label: Slides
+            widget: list
+            fields:
+              - { name: galleryId, label: Link to Gallery, widget: string, hint: "Gallery slug (e.g. vogue-2024)" }
+              - { name: desktopImage, label: Desktop Image (vertical), widget: image, hint: "Portrait image for desktop" }
+              - { name: mobileImage, label: Mobile Image (horizontal), widget: image, hint: "Landscape image for mobile" }
 
+      - name: quotes
+        label: Quotes
+        file: content/quotes.json
+        format: json
+        description: "Displayed between featured galleries"
+        fields:
+          - name: quotes
+            label: Quotes
+            widget: list
+            fields:
+              - { name: text, label: Quote, widget: text }
+              - { name: author, label: Author, widget: string }
+
+  # ─── 👤 ABOUT ME ────────────────────────────────
+  - name: about
+    label: "👤 About"
+    files:
       - name: bio
         label: Bio
         file: content/bio.json
@@ -31,75 +55,64 @@ collections:
             label: Paragraphs
             widget: list
             fields:
-              - { name: id, label: ID, widget: string }
+              - { name: id, label: ID, widget: string, required: false }
               - { name: value, label: Text, widget: text }
-
-      - name: contact
-        label: Contact Info
-        file: content/contact.json
-        format: json
-        fields:
-          - { name: email, label: Email, widget: string }
-          - { name: location, label: Location, widget: string }
-          - { name: instagram, label: Instagram Handle, widget: string }
-          - { name: linkedin, label: LinkedIn URL, widget: string }
-
-      - name: featured
-        label: Featured Work
-        file: content/featured.json
-        format: json
-        fields:
-          - name: galleries
-            label: Featured Gallery Slugs
-            widget: list
-            field: { name: slug, label: Slug, widget: string }
-
-      - name: quotes
-        label: Quotes
-        file: content/quotes.json
-        format: json
-        fields:
-          - name: quotes
-            label: Quotes
-            widget: list
-            fields:
-              - { name: text, label: Quote Text, widget: text }
-              - { name: author, label: Author, widget: string }
 
       - name: film-strip
         label: Film Strip
         file: content/film-strip.json
         format: json
+        description: "Scrolling film strip on About page"
         fields:
           - name: images
-            label: Film Strip Images
+            label: Images
             widget: list
             fields:
               - { name: url, label: Image, widget: image }
               - { name: orientation, label: Orientation, widget: select, options: [vertical, horizontal] }
               - { name: aspectRatio, label: Aspect Ratio, widget: number, value_type: float }
 
+  # ─── 📞 CONTACT ─────────────────────────────────
+  - name: contact
+    label: "📞 Contact"
+    files:
+      - name: contact-info
+        label: Contact Info
+        file: content/contact.json
+        format: json
+        fields:
+          - { name: email, label: Email, widget: string }
+          - { name: location, label: Location, widget: string }
+          - { name: instagram, label: Instagram, widget: string }
+          - { name: linkedin, label: LinkedIn, widget: string }
+
+  # ─── 📸 GALLERY ─────────────────────────────────
   - name: gallery
-    label: "📸 Gallery Projects"
-    label_singular: Gallery Project
+    label: "📸 Gallery"
+    label_singular: Project
     folder: content/gallery
     format: json
     create: true
     slug: "{{fields.id}}"
     identifier_field: id
-    summary: "{{title}}"
-    sortable_fields: [title, featured]
+    summary: "{{title}}{{' ⭐' | ternary(featured, '')}}"
+    sortable_fields: [title, featured, date]
+    view_filters:
+      - { label: "Featured", field: featured, pattern: true }
     fields:
-      - { name: id, label: Slug / ID, widget: string }
+      - { name: id, label: Slug, widget: string, hint: "URL-safe ID (e.g. vogue-2024)" }
       - { name: title, label: Title, widget: string }
       - { name: subTitle, label: Subtitle, widget: string, required: false }
-      - { name: featured, label: Featured, widget: boolean, default: false }
+      - { name: featured, label: "⭐ Featured on Homepage", widget: boolean, default: false }
+      - { name: date, label: Date, widget: datetime, required: false }
       - { name: coverPhoto, label: Cover Photo, widget: image }
       - name: imageUrls
         label: Gallery Images
         widget: list
-        field: { name: url, label: Image URL, widget: image }
+        field: { name: url, label: Image, widget: image }
       - name: imageAspectRatios
-        label: Image Aspect Ratios
+        label: Aspect Ratios
         widget: list
         field: { name: ratio, label: Ratio, widget: number, value_type: float }
+        required: false
+      - { name: password, label: Password, widget: string, required: false, hint: "Leave empty for public" }
