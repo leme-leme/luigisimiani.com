@@ -37,23 +37,12 @@ content:
             type: image
             description: "Landscape/horizontal for mobile screens"
 
-  - name: featured
-    label: "🏠 Featured Work"
-    type: file
-    path: content/featured.json
-    format: json
-    fields:
-      - name: galleries
-        label: Featured Gallery IDs
-        type: string
-        list: true
-        description: "Gallery slugs shown on homepage (order matters)"
-
   - name: quotes
     label: "🏠 Quotes"
     type: file
     path: content/quotes.json
     format: json
+    description: "Displayed between featured galleries on the homepage"
     fields:
       - name: quotes
         label: Quotes
@@ -66,19 +55,6 @@ content:
           - name: author
             label: Author
             type: string
-
-  - name: settings
-    label: "🏠 Settings"
-    type: file
-    path: content/settings.json
-    format: json
-    fields:
-      - name: heroTitle
-        label: Hero Title (overlay)
-        type: string
-      - name: featuredTitle
-        label: Featured Section Title
-        type: string
 
   # ─── 👤 ABOUT ME ────────────────────────────────
 
@@ -145,6 +121,7 @@ content:
         type: string
 
   # ─── 📸 GALLERY ─────────────────────────────────
+  # Toggle "Featured" on a gallery to show it on the homepage.
 
   - name: galleries
     label: "📸 Gallery Projects"
@@ -165,7 +142,7 @@ content:
         label: Subtitle
         type: string
       - name: featured
-        label: Featured
+        label: "⭐ Featured on Homepage"
         type: boolean
       - name: date
         label: Date
