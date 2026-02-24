@@ -2,18 +2,18 @@
   "slides": [
     {
       "galleryId": "vogue-2024",
-      "desktopImage": "/images/galleries/VOGUE%202024/2024-09-06%20(Amsterdam%20Fashion%20Week)-1.jpg",
-      "mobileImage": "/images/galleries/VOGUE%202024/2024-09-06%20(Amsterdam%20Fashion%20Week)-1.jpg"
+      "desktopImage": "/images/galleries/VOGUE 2024/2024-09-06 (Amsterdam Fashion Week)-1.jpg",
+      "mobileImage": "/images/galleries/VOGUE 2024/2024-09-06 (Amsterdam Fashion Week)-1.jpg"
     },
     {
       "galleryId": "diesel-2024",
-      "desktopImage": "/images/galleries/DIESEL%202024/2024-09-21%20(Diesel%20Street)-1.jpg",
-      "mobileImage": "/images/galleries/DIESEL%202024/2024-09-21%20(Diesel%20Street)-1.jpg"
+      "desktopImage": "/images/galleries/DIESEL 2024/2024-09-21 (Diesel Street)-1.jpg",
+      "mobileImage": "/images/galleries/DIESEL 2024/2024-09-21 (Diesel Street)-1.jpg"
     },
     {
       "galleryId": "la-cassette-runway",
-      "desktopImage": "/images/galleries/La%20Cassette%20Runway/2024-05-02%20(La%20Cassette%20Runway)-1.jpg",
-      "mobileImage": "/images/galleries/La%20Cassette%20Runway/2024-05-02%20(La%20Cassette%20Runway)-1.jpg"
+      "desktopImage": "/images/galleries/La Cassette Runway/2024-05-02 (La Cassette Runway)-1.jpg",
+      "mobileImage": "/images/galleries/La Cassette Runway/2024-05-02 (La Cassette Runway)-1.jpg"
     }
   ]
 }
