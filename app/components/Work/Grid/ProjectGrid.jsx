@@ -10,7 +10,7 @@ export default function ProjectGrid({ docs }) {
   return (
     <AnimatePresence>
       {!isMenuVisible && (
-        <div className="project-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 md:px-8 lg:px-16 py-8">
           {docs.map((doc, index) => (
             <GridItem doc={doc} key={doc.id} index={index} />
           ))}

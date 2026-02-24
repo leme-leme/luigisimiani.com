@@ -6,48 +6,39 @@ import Link from "next/link";
 import { gridItemAnimationProps } from "./animation";
 
 function GridItem({ doc, index }) {
-  // Only prioritize first 3 items for better initial page load
   const isPriority = index < 3;
 
   return (
     <FadeIn>
-      <Link href={`/gallery/${doc.id}`} style={{ textDecorationLine: "none" }}>
+      <Link href={`/gallery/${doc.id}`} className="no-underline">
         <motion.div
           key={doc.id}
-          className="project-grid-item group"
+          className="group cursor-pointer"
           {...gridItemAnimationProps(index)}
           whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
         >
-          <div className="project-grid-img-wrapper">
-            <motion.div
-              className="hover-line"
-              variants={{
-                rest: {
-                  scaleY: 0,
-                  originY: 0.5,
-                  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                },
-                hover: {
-                  scaleY: 1,
-                  originY: 0.5,
-                  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                },
-              }}
+          {/* Image container with fixed aspect ratio and object-cover */}
+          <div className="relative aspect-[4/3] overflow-hidden">
+            <Image
+              src={doc.coverPhoto}
+              alt={`${doc.title} - ${doc.subTitle || ""}`}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              priority={isPriority}
             />
-            <div className="project-grid-img-container">
-              <Image
-                src={doc.coverPhoto}
-                alt={`${doc.title} - ${doc.subTitle}`}
-                className="project-grid-img"
-                width={960}
-                height={540}
-                priority={isPriority}
-              />
-            </div>
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
           </div>
-          <div className="project-grid-item-content">
-            <h3>{doc.title}</h3>
-            <p>{doc.subTitle}</p>
+
+          {/* Title below image */}
+          <div className="pt-3 pb-6">
+            <h3 className="text-sm uppercase tracking-wider text-white">
+              {doc.title}
+            </h3>
+            {doc.subTitle && (
+              <p className="text-xs text-white/50 mt-1">{doc.subTitle}</p>
+            )}
           </div>
         </motion.div>
       </Link>

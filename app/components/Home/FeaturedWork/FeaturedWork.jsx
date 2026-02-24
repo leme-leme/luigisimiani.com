@@ -90,14 +90,14 @@ export default function FeaturedWork({ galleries, quotes = [] }) {
             </h2>
           </motion.header>
 
-          {/* 3-column grid on desktop, 2 on tablet, 1 on mobile */}
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          {/* 2-column grid on desktop, 1 on mobile */}
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
             {layoutItems.map((item, idx) => {
               if (item.type === "quote") {
                 return (
                   <motion.blockquote
                     key={`quote-${idx}`}
-                    className="col-span-1 md:col-span-2 lg:col-span-3 py-16 md:py-24"
+                    className="col-span-1 md:col-span-2 py-16 md:py-24"
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
@@ -120,18 +120,14 @@ export default function FeaturedWork({ galleries, quotes = [] }) {
               const aspectClass = getAspectClass(gallery);
 
               const spanClass =
-                span === "full"
-                  ? "col-span-1 md:col-span-2 lg:col-span-3"
-                  : span === "wide"
-                    ? "col-span-1 md:col-span-2"
-                    : "col-span-1";
+                span === "full" || span === "wide"
+                  ? "col-span-1 md:col-span-2"
+                  : "col-span-1";
 
               const imageSizes =
-                span === "full"
+                span === "full" || span === "wide"
                   ? "100vw"
-                  : span === "wide"
-                    ? "(max-width: 768px) 100vw, 66vw"
-                    : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw";
+                  : "(max-width: 768px) 100vw, 50vw";
 
               return (
                 <motion.article
