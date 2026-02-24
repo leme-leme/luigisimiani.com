@@ -5,7 +5,8 @@
   "date": "2024-06-18",
   "category": "digital",
   "tags": [
-    "downloadable, hidden"
+    "downloadable, hidden",
+    "featured"
   ],
   "coverPhoto": "/images/galleries/DIESEL 2024/2024-09-21 (Diesel Street)-1.jpg",
   "imageUrls": [
@@ -38,5 +39,6 @@
     1.5
   ],
   "isProtected": true,
-  "featured": true
+  "featured": true,
+  "visibility": "password"
 }
